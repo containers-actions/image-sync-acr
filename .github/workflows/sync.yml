@@ -23,7 +23,7 @@ jobs:
           version: latest
       - name: sync
         run: |
-          skopeo --version
+          ./skopeo --version
       # - uses: actions/setup-node@v3
       #   with:
       #     node-version: lts/Hydrogen
