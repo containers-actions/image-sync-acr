@@ -20,7 +20,7 @@ jobs:
       - name: Set up skopeo environment
         uses: warjiang/setup-skopeo@v0.1.3
         with:
-          version: v1.16.0
+          version: 1.16.0
       - name: sync
         run: |
           skopeo --version
