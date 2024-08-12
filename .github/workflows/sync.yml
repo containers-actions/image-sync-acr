@@ -19,7 +19,7 @@ jobs:
           password: ${{ secrets.ACR_PASSWORD }}
       - name: sync
         run: |
-          curl https://github.com/lework/skopeo-binary/releases/latest/download/skopeo-linux-amd64 -o skopeo
+          curl -L https://github.com/lework/skopeo-binary/releases/latest/download/skopeo-linux-amd64 -o skopeo
           chmod +x skopeo
           sudo mv -f skopeo /usr/bin/skopeo
           skopeo --version
