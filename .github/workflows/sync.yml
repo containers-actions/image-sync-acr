@@ -1,0 +1,38 @@
+name: "Sync"
+on:
+  workflow_dispatch:
+  schedule:
+    # 每天8,12,16,20点检测一次
+    - cron: '0 0,4,8,12 * * *'
+permissions: {}
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    name: sync
+    steps:
+      - uses: actions/checkout@v4
+      - name: Login to ACR
+        uses: docker/login-action@v3
+        with:
+          registry: registry.cn-beijing.aliyuncs.com
+          username: ${{ secrets.ACR_USERNAME }}
+          password: ${{ secrets.ACR_PASSWORD }}
+      - name: Set up skopeo environment
+        uses: warjiang/setup-skopeo@v0.1.3
+      - name: sync
+        run: |
+          skopeo --version
+          skopeo copy --src-tls-verify=false --dest-tls-verify=false --multi-arch=all docker://docker.io/bitnami/java:1.8 docker://registry.cn-beijing.aliyuncs.com/bjzyhk_docker_io/bitnami_dir_java:1.8
+      # - uses: actions/setup-node@v3
+      #   with:
+      #     node-version: lts/Hydrogen
+      # - run: npm install semver cheerio js-yaml
+      # - uses: actions/github-script@v6
+      #   env:
+      #     SECRETS: ${{ toJSON(secrets) }}
+      #   with:
+      #     # script
+      #     github-token: ${{ secrets.BOT_PAT }}
+      #     script: |
+      #       require('.github/scripts/run-task.js')({ github, context, core, glob, io, exec, fetch, require }, "packages/**/update.task.js");
+  
