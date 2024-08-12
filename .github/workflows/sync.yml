@@ -19,6 +19,8 @@ jobs:
           password: ${{ secrets.ACR_PASSWORD }}
       - name: Set up skopeo environment
         uses: warjiang/setup-skopeo@v0.1.3
+        with:
+          version: latest
       - name: sync
         run: |
           skopeo --version
