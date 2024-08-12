@@ -23,7 +23,8 @@ jobs:
           version: latest
       - name: sync
         run: |
-          ./skopeo --version
+          apt update skopeo -y
+          skopeo copy --src-tls-verify=false --dest-tls-verify=false --multi-arch=all docker://docker.io/bitnami/java:1.8 docker://registry.cn-beijing.aliyuncs.com/bjzyhk_docker_io/bitnami_dir_java:1.8
       # - uses: actions/setup-node@v3
       #   with:
       #     node-version: lts/Hydrogen
