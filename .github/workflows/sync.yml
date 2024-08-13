@@ -38,6 +38,6 @@ jobs:
                 let sourceImage = `${registry}/${image}`;
                 let distImage = `${distNamespace}/${image.replace('/', '_s_')}`;
                 console.log(`${sourceImage} => ${distImage}`);
-                exec.exec('/usr/bin/skopeo', ['copy', '--src-tls-verify=false', '--dest-tls-verify=false', '--multi-arch=all', `docker://${sourceImage}`, `docker://${distImage}/`])
+                await exec.exec('/usr/bin/skopeo', ['copy', '--src-tls-verify=false', '--dest-tls-verify=false', '--multi-arch=all', `docker://${sourceImage}`, `docker://${distImage}`])
               }
             }
