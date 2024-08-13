@@ -32,4 +32,12 @@ jobs:
             const fs = require('fs');
             const yaml = require('js-yaml');
             let images = yaml.load(fs.readFileSync('images.yml', 'utf8'));
-            console.log(images);
+            for (let registry of Object.keys(images)) {
+              let distNamespace = `registry.cn-beijing.aliyuncs.com/bjzyhk_${registry.replace('.', '_')}`;
+              for (let image of images[registry]) {
+                let sourceImage = `${registry}/${image}`;
+                let distImage = `${distNamespace}/${image.replace('/', '_s_')}`;
+                console.log(`${sourceImage} => ${distImage}`);
+                exec.exec('/usr/bin/skopeo', ['copy', '--src-tls-verify=false', '--dest-tls-verify=false', '--multi-arch=all', `docker://${sourceImage}`, `docker://${distImage}/`])
+              }
+            }
