@@ -11,34 +11,25 @@ jobs:
     name: sync
     steps:
       - uses: actions/checkout@v4
+      - name: install skopeo
+        run: |
+          sudo curl -sSL https://github.com/lework/skopeo-binary/releases/latest/download/skopeo-linux-amd64 -o /usr/bin/skopeo && sudo chmod +x /usr/bin/skopeo
+          skopeo --version
+      - uses: actions/setup-node@v3
+        with:
+          node-version: lts/Hydrogen
+      - name: install dependencies
+        run: npm install semver cheerio js-yaml
       - name: Login to ACR
         uses: docker/login-action@v3
         with:
           registry: registry.cn-beijing.aliyuncs.com
           username: ${{ secrets.ACR_USERNAME }}
           password: ${{ secrets.ACR_PASSWORD }}
-      - name: sync
-        run: |
-          sudo curl -sSL https://github.com/lework/skopeo-binary/releases/latest/download/skopeo-linux-amd64 -o /usr/bin/skopeo && sudo chmod +x /usr/bin/skopeo
-          skopeo --version
-          skopeo copy --src-tls-verify=false --dest-tls-verify=false --multi-arch=all docker://docker.io/bitnami/java:1.8 docker://registry.cn-beijing.aliyuncs.com/bjzyhk_docker_io/bitnami_dir_java:1.8
-          skopeo copy --src-tls-verify=false --dest-tls-verify=false --multi-arch=all docker://docker.io/bitnami/java:17 docker://registry.cn-beijing.aliyuncs.com/bjzyhk_docker_io/bitnami_dir_java:17
-          skopeo copy --src-tls-verify=false --dest-tls-verify=false --multi-arch=all docker://docker.io/bitnami/java:21 docker://registry.cn-beijing.aliyuncs.com/bjzyhk_docker_io/bitnami_dir_java:21
-          skopeo copy --src-tls-verify=false --dest-tls-verify=false --multi-arch=all docker://docker.io/bellsoft/liberica-runtime-container:jdk-8-cds-musl docker://registry.cn-beijing.aliyuncs.com/bjzyhk_docker_io/bellsoft_dir_liberica-runtime-container:jdk-8-cds-musl
-          skopeo copy --src-tls-verify=false --dest-tls-verify=false --multi-arch=all docker://docker.io/bellsoft/liberica-runtime-container:jdk-17-crac-cds-musl docker://registry.cn-beijing.aliyuncs.com/bjzyhk_docker_io/bellsoft_dir_liberica-runtime-container:jdk-17-crac-cds-musl
-          skopeo copy --src-tls-verify=false --dest-tls-verify=false --multi-arch=all docker://docker.io/bellsoft/liberica-runtime-container:jdk-21-crac-cds-musl docker://registry.cn-beijing.aliyuncs.com/bjzyhk_docker_io/bellsoft_dir_liberica-runtime-container:jdk-21-crac-cds-musl
-
-
-      # - uses: actions/setup-node@v3
-      #   with:
-      #     node-version: lts/Hydrogen
-      # - run: npm install semver cheerio js-yaml
-      # - uses: actions/github-script@v6
-      #   env:
-      #     SECRETS: ${{ toJSON(secrets) }}
-      #   with:
-      #     # script
-      #     github-token: ${{ secrets.BOT_PAT }}
-      #     script: |
-      #       require('.github/scripts/run-task.js')({ github, context, core, glob, io, exec, fetch, require }, "packages/**/update.task.js");
-  
+      - uses: actions/github-script@v6
+        with:
+          script: |
+            const fs = require('fs');
+            const yaml = require('js-yaml');
+            let images = yaml.load(fs.readFileSync('images.yml', 'utf8'));
+            console.log(images);

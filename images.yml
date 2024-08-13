@@ -1,0 +1,7 @@
+docker.io:
+  - bitnami/java:1.8
+  - bitnami/java:17
+  - bitnami/java:21
+  - bellsoft/liberica-runtime-container:jdk-8-cds-musl
+  - bellsoft/liberica-runtime-container:jdk-17-crac-cds-musl
+  - bellsoft/liberica-runtime-container:jdk-21-crac-cds-musl
